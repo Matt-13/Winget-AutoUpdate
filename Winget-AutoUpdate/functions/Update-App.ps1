@@ -54,16 +54,6 @@ Function Update-App ($app) {
         
     }
     else {
-
-        #Send failed updated app notification
-        Write-Log "$($app.Name) update failed." "Red"
-        
-        #Send Notif
-        $Title = $NotifLocale.local.outputs.output[4].title -f $($app.Name)
-        $Message = $NotifLocale.local.outputs.output[4].message
-        $MessageType = "error"
-        $Balise = $($app.Name)
-        Start-NotifTask $Title $Message $MessageType $Balise
     
     }
 

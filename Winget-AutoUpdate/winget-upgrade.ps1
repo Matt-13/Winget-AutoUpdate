@@ -22,7 +22,7 @@ if (Test-Network){
     if ($TestWinget){
         #Get Current Version
         Get-WAUCurrentVersion
-        #Check if WAU update feature is enabled
+        <#Check if WAU update feature is enabled
         Get-WAUUpdateStatus
         #If yes then check WAU update
         if ($true -eq $WAUautoupdate){
@@ -37,7 +37,7 @@ if (Test-Network){
             else{
                 Write-Log "WAU is up to date." "Green"
             }
-        }
+        }#>
 
         #Get White or Black list
         Get-WAUConfig
