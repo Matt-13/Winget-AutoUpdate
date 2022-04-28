@@ -67,7 +67,7 @@ Function Update-App ($app) {
         
     }
     else {
-    
+        Write-Log "$($app.Name) failed to update !" "Red"
     }
 
 }

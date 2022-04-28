@@ -236,7 +236,7 @@ function Uninstall-WingetAutoUpdate{
 
 function Start-WingetAutoUpdate{
     #If -DoNotUpdate is true, skip.
-    if (!($DoNotUpdate)){
+    if (($DoNotUpdate)){
             #If -Silent, run Winget-AutoUpdate now
             if ($Silent){
                 $RunWinget = 1
