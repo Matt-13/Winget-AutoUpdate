@@ -180,7 +180,7 @@ function Install-WingetAutoUpdate{
         & reg add "HKCR\AppUserModelId\Windows.SystemToast.Winget.Notification" /v IconUri /t REG_EXPAND_SZ /d %SystemRoot%\system32\@WindowsUpdateToastIcon.png /f | Out-Null
 
         # Settings for the scheduled task for Updates
-        $taskAction = New-ScheduledTaskAction –Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$($WingetUpdatePath)\winget-upgrade.ps1`""
+        $taskAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$($WingetUpdatePath)\winget-upgrade.ps1`""
         $taskTriggers = @()
         if ($UpdatesAtLogon){
             $tasktriggers += New-ScheduledTaskTrigger -AtLogOn
@@ -262,7 +262,7 @@ function Uninstall-WingetAutoUpdate{
 
 function Start-WingetAutoUpdate{
     #If -DoNotUpdate is true, skip.
-    if (($DoNotUpdate)){
+    if (!($DoNotUpdate)){
             #If -Silent, run Winget-AutoUpdate now
             if ($Silent){
                 $RunWinget = 1
