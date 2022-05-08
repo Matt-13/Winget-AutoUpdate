@@ -28,11 +28,20 @@ Remove scheduled tasks and scripts.
 .PARAMETER NotificationLevel
 Specify the Notification level: Full (Default, displays all notification), SuccessOnly (Only displays notification for success) or None (Does not show any popup).
 
+.PARAMETER UpdatesAtLogon
+Set WAU to run at user logon.
+
+.PARAMETER UpdatesInterval
+Specify the update frequency: Daily (Default), Weekly, Biweekly or Monthly.
+
 .EXAMPLE
 .\winget-install-and-update.ps1 -Silent -DoNotUpdate
 
 .EXAMPLE
 .\winget-install-and-update.ps1 -Silent -UseWhiteList
+
+.EXAMPLE
+.\winget-install-and-update.ps1 -Silent -UpdatesAtLogon -UpdatesInterval Weekly
 
 #>
 
@@ -44,7 +53,9 @@ param(
     [Parameter(Mandatory=$False)] [Switch] $DisableWAUAutoUpdate = $false,
     [Parameter(Mandatory=$False)] [Switch] $Uninstall = $false,
     [Parameter(Mandatory=$False)] [Switch] $UseWhiteList = $false,
-    [Parameter(Mandatory=$False)] [ValidateSet("Full","SuccessOnly","None")] [String] $NotificationLevel = "Full"
+    [Parameter(Mandatory=$False)] [ValidateSet("Full","SuccessOnly","None")] [String] $NotificationLevel = "Full",
+    [Parameter(Mandatory=$False)] [Switch] $UpdatesAtLogon = $false,
+    [Parameter(Mandatory=$False)] [ValidateSet("Daily","Weekly","BiWeekly","Monthly")] [String] $UpdatesInterval = "Daily"
 )
 
 
@@ -169,13 +180,28 @@ function Install-WingetAutoUpdate{
         & reg add "HKCR\AppUserModelId\Windows.SystemToast.Winget.Notification" /v IconUri /t REG_EXPAND_SZ /d %SystemRoot%\system32\@WindowsUpdateToastIcon.png /f | Out-Null
 
         # Settings for the scheduled task for Updates
-        $taskAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$($WingetUpdatePath)\winget-upgrade.ps1`""
-        $taskTrigger = New-ScheduledTaskTrigger  -Daily -At 6AM
+        $taskAction = New-ScheduledTaskAction –Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$($WingetUpdatePath)\winget-upgrade.ps1`""
+        $taskTriggers = @()
+        if ($UpdatesAtLogon){
+            $tasktriggers += New-ScheduledTaskTrigger -AtLogOn
+        }
+        if ($UpdatesInterval -eq "Daily"){
+            $tasktriggers += New-ScheduledTaskTrigger -Daily -At 6AM
+        }
+        elseif ($UpdatesInterval -eq "Weekly"){
+            $tasktriggers += New-ScheduledTaskTrigger -Weekly -At 6AM -DaysOfWeek 2
+        }
+        elseif ($UpdatesInterval -eq "BiWeekly"){
+            $tasktriggers += New-ScheduledTaskTrigger -Weekly -At 6AM -DaysOfWeek 2 -WeeksInterval 2
+        }
+        elseif ($UpdatesInterval -eq "Monthly"){
+            $tasktriggers += New-ScheduledTaskTrigger -Weekly -At 6AM -DaysOfWeek 2 -WeeksInterval 4
+        }
         $taskUserPrincipal = New-ScheduledTaskPrincipal -UserId S-1-5-18 -RunLevel Highest
         $taskSettings = New-ScheduledTaskSettingsSet -Compatibility Win8 -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit 03:00:00
 
         # Set up the task, and register it
-        $task = New-ScheduledTask -Action $taskAction -Principal $taskUserPrincipal -Settings $taskSettings -Trigger $taskTrigger
+        $task = New-ScheduledTask -Action $taskAction -Principal $taskUserPrincipal -Settings $taskSettings -Trigger $taskTriggers
         Register-ScheduledTask -TaskName 'Winget-AutoUpdate' -InputObject $task -Force | Out-Null
 
         # Settings for the scheduled task for Notifications
