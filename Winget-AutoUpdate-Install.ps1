@@ -11,7 +11,7 @@ https://github.com/Romanitho/Winget-AutoUpdate
 Install Winget-AutoUpdate and prerequisites silently
 
 .PARAMETER WingetUpdatePath
-Specify Winget-AutoUpdate installation localtion. Default: C:\ProgramData\Winget-AutoUpdate\
+Specify Winget-AutoUpdate installation location. Default: C:\ProgramData\Winget-AutoUpdate\
 
 .PARAMETER DoNotUpdate
 Do not run Winget-AutoUpdate after installation. By default, Winget-AutoUpdate is run just after installation.
@@ -144,7 +144,7 @@ function Install-WinGet{
             Write-Host "Installed MSIXBundle for App Installer" -ForegroundColor Green
         }
         catch{
-            Write-Host "Failed to intall MSIXBundle for App Installer..." -ForegroundColor Red
+            Write-Host "Failed to install MSIXBundle for App Installer..." -ForegroundColor Red
         }
     
         #Remove WinGet MSIXBundle

@@ -3,7 +3,7 @@ This project uses the Winget tool to daily update apps (with system context) and
 
 ![image](https://user-images.githubusercontent.com/96626929/150645599-9460def4-0818-4fe9-819c-dd7081ff8447.png)
 
-## Intallation
+## Installation
 Just [download latest version](https://github.com/Romanitho/Winget-AutoUpdate/archive/refs/tags/v1.9.1.zip), unzip, run "install.bat" as admin to install by default.
 
 ## Configurations
@@ -31,7 +31,7 @@ Scheduled task is set to run:
 - At 6AM Everyday (with the -StartWhenAvailable option to be sure it is run at least once a day)
 This way, even without connected user, powered on computers get updated anyway.
 
-> From version 1.9.0 (on new installations) WAU runs everyday at 6AM. You can now configure the frequency with `-UpdatesInterval` option (Daily, Weekly, Biweekly or Monthly). You can also add `-UpdatesAtLogon` parameter to run at user logon and keep this option activated like previous versions (recommanded).
+> From version 1.9.0 (on new installations) WAU runs everyday at 6AM. You can now configure the frequency with `-UpdatesInterval` option (Daily, Weekly, Biweekly or Monthly). You can also add `-UpdatesAtLogon` parameter to run at user logon and keep this option activated like previous versions (recommended).
 
 ### Log location
 You can find logs in install location, in log folder.
@@ -48,7 +48,7 @@ Eventually, try to reinstall or update app manually to see if new version is det
 Same process as new installation : download, unzip and run "install.bat".
 
 ### Automatic Update
-A new Auto-Update process has been released from version 1.5.0. By default, WAU AutoUpdate is enabled. It will not overwrite the configurations, icons (if personalised), excluded_apps list,...
+A new Auto-Update process has been released from version 1.5.0. By default, WAU AutoUpdate is enabled. It will not overwrite the configurations, icons (if personalized), excluded_apps list,...
 To disable WAU AutoUpdate, run the "winget-install-and-update.ps1" with "-DisableWAUAutoUpdate" parameter
 
 ## Advanced installation
