@@ -19,6 +19,8 @@ Function Update-App ($app) {
     #Check if application updated properly
     $CheckOutdated = Get-WingetOutdatedApps
     $FailedToUpgrade = $false
+    #Check if mods exist
+    $ModsInstall, $ModsUpgrade = Test-Mods $($app.Id)
     foreach ($CheckApp in $CheckOutdated){
         if ($($CheckApp.Id) -eq $($app.Id)) {
             
@@ -30,7 +32,19 @@ Function Update-App ($app) {
             foreach ($CheckApp2 in $CheckOutdated2){
                 if ($($CheckApp2.Id) -eq $($app.Id)) {
                     $FailedToUpgrade = $true
-                }      
+                }
+                else {
+                    if ($ModsInstall){
+                        Write-Log "Modifications for $($app.Id) after install are being applied..." "Yellow"
+                        & "$ModsInstall"
+                    }
+                }     
+            }
+        }
+        else {
+            if ($ModsUpgrade){
+                Write-Log "Modifications for $($app.Id) after upgrade are being applied..." "Yellow"
+                & "$ModsUpgrade"
             }
         }
     }
@@ -50,7 +64,7 @@ Function Update-App ($app) {
         $Balise = $($app.Name)
         Start-NotifTask $Title $Message $MessageType $Balise
 
-        $InstallOK += 1
+        $Script:InstallOK += 1
         
     }
     else {
